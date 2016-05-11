@@ -1,0 +1,273 @@
+<html>
+	<head>
+		<style media="screen" type="text/css">
+            .totals{
+                height: 20%;
+                width: 100%;
+            }
+
+            .total{
+                font-size: 50;
+                font-weight: bold;
+                font-style: italic;
+            }
+
+            .caption{
+                font-size: 10;
+                font-weight: bold;
+                font-style: italic;
+            }
+
+            .new{
+                color: green;
+                font-size: 20;
+            }
+
+            .updated{
+                color: orange;
+                font-size: 20;
+            }
+
+            .nonUpdated{
+                color: red;
+                font-size: 20;
+            }
+
+            .entity{
+                float:left;
+                width:25%;
+                height: 100%;
+                text-align: center;
+                font-family: "Helvetica";
+            }
+
+            .attributes{    
+                width:100%;
+                text-align: center;
+            }
+        </style>
+	</head>
+
+	<body>
+		<div class="totals">
+    		<div id="col1" class="entity">
+    			<div id="title1">RESEARCHERS</div>
+    			<div id="total1" class="total">XXXX</div> 
+    			<a id="new1" onclick="loadNewRes()" class="new" >XX</a>
+    			<a>+</a> 
+    			<a id="updated1" onclick="loadUpdatedRes()" class="updated">XX</a>
+    			<a>+</a> 
+    			<a id="nonUpdated1" onclick="loadNonUpdatedRes()" class="nonUpdated">XX</a>
+    		</div>
+    		<div id="col2" class="entity">
+    			<div id="title2">PROJECTS</div>
+    			<div id="total2" class="total">XXXX</div> 
+    			<a id="new2" onclick="loadNewPrj()" class="new">XX</a>
+    			<a>+</a> 
+    			<a id="updated2" onclick="loadUpdatedPrj()" class="updated">XX</a>
+    			<a>+</a> 
+    			<a id="nonUpdated2" onclick="loadNonUpdatedPrj()" class="nonUpdated">XX</a>
+    		</div>
+    		<div id="col3" class="entity">
+    			<div id="title3">ORG UNITS</div>
+    			<div id="total3" class="total">XXXX</div> 
+    			<a id="new3" onclick="loadNewOrg()" class="new">XX</a>
+    			<a>+</a> 
+    			<a id="updated3" onclick="loadUpdatedOrg()" class="updated">XX</a>
+    			<a>+</a> 
+    			<a id="nonUpdated3" onclick="loadNonUpdatedOrg()" class="nonUpdated">XX</a>
+    		</div>
+    		<div id="col4" class="entity">
+    			<div id="title4">RESEARCH UNITS</div>
+    			<div id="total4" class="total">XXXX</div> 
+    			<a id="new4" onclick="loadNewRun()" class="new">XX</a>
+    			<a>+</a> 
+    			<a id="updated4" onclick="loadUpdatedRun()" class="updated">XX</a>
+    			<a>+</a> 
+    			<a id="nonUpdated4" onclick="loadNonUpdatedRun()" class="nonUpdated">XX</a>
+    		</div>
+    	</div>
+    	<div>
+    		<table id="attributes" border="1" class="attributes">
+    			<tr>
+    				<td>Entity ID</td>
+    				<td>Attribute</td>
+    				<td>Value</td>
+    				<td>Status</td>		
+  				</tr>
+    		</table>
+    	</div>
+</div>
+	</body>
+</html>
+
+
+<script>
+
+    var json = '';
+    var obj = JSON.parse(json);
+    var res = obj[0];
+    var prj = obj[1];
+    var org = obj[2];
+    var run = obj[3];   
+
+  
+	function loadAttributes(htmlTableID,ids,entity){
+    	var table = document.getElementById(htmlTableID);
+
+    	while(table.rows.length > 1) {
+  			table.deleteRow(1);
+		}    	
+   		
+   		for (var id in ids){   			
+			for (var numAtt in entity[ids[id]]){                
+				var row = table.insertRow(table.rows.length);
+				if (entity[ids[id]][numAtt].status == "new") row.style.backgroundColor = "#66CC66";
+                else if (entity[ids[id]][numAtt].status == "updated") row.style.backgroundColor = "#FFCC66";
+                else if (entity[ids[id]][numAtt].status == "already found") row.style.backgroundColor = "#CC6666";
+    			var cell1 = row.insertCell(0);
+    			var cell2 = row.insertCell(1);
+    			var cell3 = row.insertCell(2);
+    			var cell4 = row.insertCell(3);
+
+    			if (numAtt == 0)  cell1.innerHTML = ids[id];
+                else cell1.innerHTML = "&uarr;";
+				cell2.innerHTML = entity[ids[id]][numAtt].attribute;				
+    			cell3.innerHTML = entity[ids[id]][numAtt].value;
+    			cell4.innerHTML = entity[ids[id]][numAtt].status;   
+			}
+		}
+	}
+
+	function getNewEntitiesIDs(entity){
+		var ids = [];
+        var countIt = true;
+		for (var id in entity){
+            countIt=true;
+			for (var numAtt in entity[id]){
+				if (entity[id][numAtt].entitystatus != "new"){
+                    countIt=false;			
+				    break;
+                }				
+			}
+            if (countIt) ids[ids.length]=id; 			
+		}
+		return ids;
+	}
+
+	function getUpdatedEntitiesIDs(entity){
+		var ids = [];
+        var countId = true;
+		for (var id in entity){
+            countId = true;
+			for (var numAtt in entity[id]){
+				if (entity[id][numAtt].entitystatus != "updated" || (entity[id][numAtt].entitystatus == "updated" && entity[id][numAtt].status == "already found")){
+					countId=false;
+					break;
+				} 			
+			}
+            if (countId) ids[ids.length]=id;			
+		}
+		return ids;
+	}  
+
+	function getNonUpdatedEntitiesIDs(entity){
+		var ids = [];
+        var countIt=true;
+		for (var id in entity){
+            countIt=true;
+			for (var numAtt in entity[id]){
+				if (entity[id][numAtt].entitystatus != "updated" && entity[id][numAtt].status != "already found"){
+                    countIt=false;
+					break;
+				} 			
+			}
+            if (countIt == true) ids[ids.length]=id; 
+		}
+		return ids;
+	} 
+
+	function countNewEntities(htmlResultID,entity){
+		document.getElementById(htmlResultID).innerHTML = getNewEntitiesIDs(entity).length;
+	}
+
+	function countNonUpdatedEntities(htmlResultID,entity){
+    	document.getElementById(htmlResultID).innerHTML = getNonUpdatedEntitiesIDs(entity).length;
+    }
+    
+    function countUpdatedEntities(htmlResultID,entity){	   
+	   document.getElementById(htmlResultID).innerHTML = getUpdatedEntitiesIDs(entity).length;
+    }
+
+    function loadNewRes(){
+    	loadAttributes("attributes",getNewEntitiesIDs(res),res);
+    }
+
+    function loadNewPrj(){
+    	loadAttributes("attributes",getNewEntitiesIDs(prj),prj);
+    }
+
+    function loadNewOrg(){
+    	loadAttributes("attributes",getNewEntitiesIDs(org),org);
+    }
+
+    function loadNewRun(){
+    	loadAttributes("attributes",getNewEntitiesIDs(run),run);
+    }
+
+    function loadUpdatedRes(){
+    	loadAttributes("attributes",getUpdatedEntitiesIDs(res),res);
+    }
+
+    function loadUpdatedPrj(){
+    	loadAttributes("attributes",getUpdatedEntitiesIDs(prj),prj);
+    }
+
+    function loadUpdatedOrg(){
+    	loadAttributes("attributes",getUpdatedEntitiesIDs(org),org);
+    }
+
+    function loadUpdatedRun(){
+    	loadAttributes("attributes",getUpdatedEntitiesIDs(run),run);
+    }
+
+    function loadNonUpdatedRes(){
+    	loadAttributes("attributes",getNonUpdatedEntitiesIDs(res),res);
+    }
+
+    function loadNonUpdatedPrj(){
+    	loadAttributes("attributes",getNonUpdatedEntitiesIDs(prj),prj);
+    }
+
+    function loadNonUpdatedOrg(){
+    	loadAttributes("attributes",getNonUpdatedEntitiesIDs(org),org);
+    }
+
+    function loadNonUpdatedRun(){
+    	loadAttributes("attributes",getNonUpdatedEntitiesIDs(run),run);
+    }
+
+	//totals
+    document.getElementById("total1").innerHTML = Object.keys(res).length;
+    document.getElementById("total2").innerHTML = Object.keys(prj).length;
+    document.getElementById("total3").innerHTML = Object.keys(org).length;
+    document.getElementById("total4").innerHTML = Object.keys(run).length;
+
+    //counters
+    countNewEntities("new1",res);
+    countNewEntities("new2",prj);
+    countNewEntities("new3",org);
+    countNewEntities("new4",run);
+    countUpdatedEntities("updated1",res);
+    countUpdatedEntities("updated2",prj);
+    countUpdatedEntities("updated3",org);
+    countUpdatedEntities("updated4",run);
+    countNonUpdatedEntities("nonUpdated1",res);
+    countNonUpdatedEntities("nonUpdated2",prj);
+    countNonUpdatedEntities("nonUpdated3",org);
+    countNonUpdatedEntities("nonUpdated4",run);
+	
+
+</script>
+
+
