@@ -1,7 +1,15 @@
 # DSpace-CRIS Loader
 ##Definition
 
-This loader has born under the requirement of populating a DSpace-CRIS project from zero at CSUC.
+This loader has born under the requirement of populating a DSpace-CRIS project called 'Portal de la Recerca de Catalunya' from zero at CSUC.
+
+The portal's goal is to display and disseminate from a single place the research activity that is carried out in Catalonia in regard to researchers, publications, groups and research projects for the international scientific community, companies, financial organizations and public in general, thus making open access to scientific output easy. In the long term, the project aims at simplifying management processes as well as to support their evaluation. 
+
+Universities send us CRIS data from his current CRIS systems, we check the data with an online CERIF-XML validator and we start a workflow of various steps that ingest the data into DSpace-CRIS.
+
+![Alt text](/readme/workflow.png?raw=true)
+
+*more info here http://www.csuc.cat/en/research/portal-de-la-recerca-de-catalunya
 
 Out of the box DSpace-CRIS provides manual ways through DSpace login system for inserting data as an administrator or researcher account, both cases ends in a "fill the gaps" interface where individuals complete his own data, so, is not feasible for loading the actual data present in another source.
 
