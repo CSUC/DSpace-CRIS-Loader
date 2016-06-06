@@ -165,7 +165,9 @@ Once this, we set up our researcher data, every field of the researcher is wrapp
 | DOPOINTER	| new Attribute(String shortname, String doid, Dtype.DOPOINTER) |
 
 
-You can see the shortname of every field in the administrator of your DSpace-CRIS: [Portal de la recerca > Documentació carregador > shortname.png]
+You can see the shortname of every field in the administrator of your DSpace-CRIS: 
+
+![Alt text](/readme/shortname.png?raw=true)
 
 After that we can run the *addResearcher* function in order to finally insert the researcher into the system, setting also a unique source ID and source reference.
 
@@ -181,7 +183,7 @@ The project and the organization unit are inserted in the same way we do with th
 Here is a representation of what we are going to do:
 
 
-[Portal de la recerca > Documentació carregador > ex2.png]
+![Alt text](/readme/relationExample.png?raw=true)
 
 
 In order to link the researcher with the project as principal investigator, we need to add a field of type RPPOINTER (Researcher Page Pointer) in the project, this field needs also the RPID (internal ID that DSpace-CRIS generates automatically for every CRIS entity) which can be obtained using the function *getRPidBySourceidANDsourceref* and passing to it the source ID and source reference of the researcher we want to link.
@@ -200,8 +202,7 @@ The second part tries to update some fields of this project.
 Here's an easy diagram of what we are inserting after running this example:
 
 
-[Portal de la recerca > Documentació carregador > ex3.png]
-
+![Alt text](/readme/updateExample.png?raw=true)
 
 So basically for updating a CRIS entity already found in the system we need to create a new one, with the new/updated fields as we do when inserting a new one but calling a different function, for example in this case we are updating a project so instead of calling *addProject* we are going to call *updateProject* passing the PJID of the actual project in the system.
 
